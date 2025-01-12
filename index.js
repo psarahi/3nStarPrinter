@@ -8,14 +8,11 @@ const path = require("path");
 const dayjs = require("dayjs");
 const { formatearNumero } = require("./helpers/formato");
 // Conectar al servidor en la nube
-<<<<<<< Updated upstream
-const socket = io("http://localhost:3005"); // Cambia por la dirección IP de tu servidor
+// const socket = io("http://localhost:3005"); // Cambia por la dirección IP de tu servidor
 // const socket = io("https://api-appointsmentscontrol.onrender.com"); // Cambia por la dirección IP de tu servidor
-=======
 // const socket = io("http://localhost:3005"); // Cambia por la dirección IP de tu servidor
 // const socket = io("https://api-appointsmentscontrol.onrender.com"); // Cambia por la dirección IP de tu servidor
 const socket = io("https://backendopticaecheverria-production-eeb4.up.railway.app"); // Cambia por la dirección IP de tu servidor
->>>>>>> Stashed changes
 
 //////// Sucursal Optica Cristiana Echeverria //////////////
 
@@ -26,27 +23,28 @@ socket.on("connect", () => {
 // Manejar eventos de impresión
 socket.on("printFactura", (data) => {
   let { datosImprimir } = data;
+  // console.log(datosImprimir);
 
-  if (datosImprimir.sucursales !== "Optica Cristiana Echeverria"){
+  if (datosImprimir.nombreSucursal !== "Optica Cristiana Echeverria") {
     console.log("No pertenece a esta sucursal");
-    return; 
+    return;
   }
-    try {
-      const device = new escpos.USB();
-      const printer = new escpos.Printer(device);
+  try {
+    const device = new escpos.USB();
+    const printer = new escpos.Printer(device);
 
-      const resizeImage = async (inputPath, outputPath) => {
-        await sharp(inputPath)
-          .resize({ width: 400 }) // Match printer width
-          .toFile(outputPath);
-      };
+    // const resizeImage = async (inputPath, outputPath) => {
+    //   await sharp(inputPath)
+    //     .resize({ width: 400 }) // Match printer width
+    //     .toFile(outputPath);
+    // };
 
-      const table = `
+    const table = `
       <table style='width:100%' class='receipt-table' border='0'>
         <thead>
           <tr class='heading'>
-            <th>Cantidad</th>
-            <th>Descripcion</th>
+            <th>Cant</th>
+            <th>Desc</th>
             <th>Monto</th>
           </tr>
         </thead>
@@ -65,100 +63,93 @@ socket.on("printFactura", (data) => {
       </table>
     `;
 
-      const textHtml = htmlToText.convert(table, {
-        wordwrap: false,
-        tables: [".receipt-box", ".receipt-table"],
-      });
+    const textHtml = htmlToText.convert(table, {
+      wordwrap: false,
+      tables: [".receipt-box", ".receipt-table"],
+    });
 
-      device.open(function (error) {
-        if (error) {
-          console.error("Error al abrir el dispositivo:", error);
-          return;
-        }
+    device.open(function (error) {
+      if (error) {
+        console.error("Error al abrir el dispositivo:", error);
+        return;
+      }
 
-        resizeImage("logoOptica.png", "output.png").then(() => {
-          device.open(() => {
-            if (error) {
-              console.error("Error al abrir el dispositivo:", error);
-              return;
-            }
-
-            escpos.Image.load(path.resolve("output.png"), (image) => {
-              printer
-                .align("ct")
-                .raster(image)
-                .font("a")
-                .align("ct")
-                .encode("utf8")
-                .size(0, 0)
-                .text("CON VISION DE SERVICIO")
-                .text(`RTN ${datosImprimir.rtnSucursal}`)
-                .text(`TEL: ${datosImprimir.tel} / CEL: ${datosImprimir.cel}`)
-                .text(`DIRECCION ${datosImprimir.direccion}`)
-                .text(`EMAIL ${datosImprimir.email}`)
-                .text("")
-                .align("LT")
-                .text(`#FACTURA: ${datosImprimir.numFacRec}`)
-                .text(`FECHA: ${dayjs().format("YYYY-MM-DD hh:mm a")}`)
-                .text(`CLIENTE: ${datosImprimir.cliente}`)
-                .text(`RTN: ${datosImprimir.rtnCliente}`)
-                .text(`VENDEDOR: ${datosImprimir.vendedor}`)
-                .text("")
-                .align("RT")
-                .drawLine()
-                .text(textHtml)
-                .drawLine()
-                .text(datosImprimir.labelsTotales[0])
-                .text(datosImprimir.labelsTotales[1])
-                .text(datosImprimir.labelsTotales[2])
-                .text(datosImprimir.labelsTotales[3])
-                .text(datosImprimir.labelsTotales[4])
-                .text(datosImprimir.labelsTotales[5])
-                .text(datosImprimir.labelsTotales[6])
-                .text(datosImprimir.labelsTotales[7])
-                .text(datosImprimir.labelsTotales[8])
-                .text("")
-                .text(
-                  `${datosImprimir.formaPago} L ${formatearNumero(
-                    datosImprimir.total
-                  )}`
-                )
-                .text("")
-                .align("ct")
-                .text(datosImprimir.totalLetras)
-                .text("No ORDEN DE COMPRA EXENTA:")
-                .text("No CONST. REGISTRO EXONERADO:")
-                .text("No REGISTRO SAG:")
-                .align("lt")
-                .text(`CAI: ${datosImprimir.cai}`)
-                .text(`RANGO AUTORIZADO: ${datosImprimir.rango}`)
-                .text(
-                  `FECHA LIMITE DE EMISION : ${dayjs(datosImprimir.fechaEmision)
-                    .add(6, "hour")
-                    .format("YYYY-MM-DD")}`
-                )
-                .text("")
-                .align("ct")
-                .text("LA FACTURA ES BENEFICIO DE TODOS, EXIJALA")
-                .text(datosImprimir.mensaje.toLocaleUpperCase())
-                .feed(3)
-                .beep(1, 100)
-                .cut()
-                .close();
-            });
-          });
-        });
-      });
-    } catch (error) {
-      console.error("Error al imprimir:", error);
-    }
+      // resizeImage("logoOptica.png", "output.png").then(() => {
+      // escpos.Image.load(path.resolve("output.png"), (image) => {
+      printer
+        .align("ct")
+        // .raster(imakge)
+        .text(datosImprimir.nombreSucursal.toLocaleUpperCase())
+        .font("a")
+        .align("ct")
+        .encode("utf8")
+        .size(0, 0)
+        .text("CON VISION DE SERVICIO")
+        .text(`RTN ${datosImprimir.rtnSucursal}`)
+        .text(`TEL: ${datosImprimir.tel} / CEL: ${datosImprimir.cel}`)
+        .text(`DIRECCION ${datosImprimir.direccion}`)
+        .text(`EMAIL ${datosImprimir.email}`)
+        .text("")
+        .align("LT")
+        .text(`#FACTURA: ${datosImprimir.numFacRec}`)
+        .text(`FECHA: ${dayjs().format("YYYY-MM-DD hh:mm a")}`)
+        .text(`CLIENTE: ${datosImprimir.cliente}`)
+        .text(`RTN: ${datosImprimir.rtnCliente}`)
+        .text(`VENDEDOR: ${datosImprimir.vendedor}`)
+        .text("")
+        .align("RT")
+        .drawLine()
+        .text(textHtml)
+        .drawLine()
+        .text(datosImprimir.labelsTotales[0])
+        .text(datosImprimir.labelsTotales[1])
+        .text(datosImprimir.labelsTotales[2])
+        .text(datosImprimir.labelsTotales[3])
+        .text(datosImprimir.labelsTotales[4])
+        .text(datosImprimir.labelsTotales[5])
+        .text(datosImprimir.labelsTotales[6])
+        .text(datosImprimir.labelsTotales[7])
+        .text(datosImprimir.labelsTotales[8])
+        .text("")
+        .text(
+          `${datosImprimir.formaPago} L ${formatearNumero(datosImprimir.total)}`
+        )
+        .text("")
+        .align("ct")
+        .text(datosImprimir.totalLetras)
+        .text("No ORDEN DE COMPRA EXENTA:")
+        .text("No CONST. REGISTRO EXONERADO:")
+        .text("No REGISTRO SAG:")
+        .align("lt")
+        .text(`CAI: ${datosImprimir.cai}`)
+        .text(`RANGO AUTORIZADO: ${datosImprimir.rango}`)
+        .text(
+          `FECHA LIMITE DE EMISION : ${dayjs(datosImprimir.fechaEmision)
+            .add(6, "hour")
+            .format("YYYY-MM-DD")}`
+        )
+        .text("")
+        .align("ct")
+        .text("LA FACTURA ES BENEFICIO DE TODOS, EXIJALA")
+        .text(datosImprimir.mensajeFactura.toLocaleUpperCase())
+        .feed(3)
+        .beep(1, 100)
+        .cut()
+        .close();
+    });
+    //     });
+    //   });
+    // });
+  } catch (error) {
+    console.error("Error al imprimir:", error);
+  }
 });
 
 socket.on("printRecibo", (data) => {
   let { datosImprimir } = data;
-  if (datosImprimir.sucursales !== "Optica Cristiana Echeverria"){
+  if (datosImprimir.nombreSucursal !== "Optica Cristiana Echeverria") {
     console.log("No pertenece a esta sucursal");
-    return; 
+    return;
   }
   try {
     const device = new escpos.USB();
