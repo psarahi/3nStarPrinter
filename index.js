@@ -8,10 +8,10 @@ const path = require("path");
 const dayjs = require("dayjs");
 const { formatearNumero } = require("./helpers/formato");
 // Conectar al servidor en la nube
-// const socket = io("http://localhost:3005"); // Cambia por la dirección IP de tu servidor
-const socket = io("https://api-appointsmentscontrol.onrender.com"); // Cambia por la dirección IP de tu servidor
+const socket = io("http://localhost:3005"); // Cambia por la dirección IP de tu servidor
+// const socket = io("https://api-appointsmentscontrol.onrender.com"); // Cambia por la dirección IP de tu servidor
 
-//////// Sucursal Optica Cristiana Echeverria 66f4a12d40a1f9b0b8600d4c//////////////
+//////// Sucursal Optica Cristiana Echeverria //////////////
 
 socket.on("connect", () => {
   console.log("Conectado al servidor en la nube");
@@ -21,7 +21,7 @@ socket.on("connect", () => {
 socket.on("printFactura", (data) => {
   let { datosImprimir } = data;
 
-  if (datosImprimir.sucursales !== "66f4a12d40a1f9b0b8600d4c"){
+  if (datosImprimir.sucursales !== "Optica Cristiana Echeverria"){
     console.log("No pertenece a esta sucursal");
     return; 
   }
@@ -150,7 +150,7 @@ socket.on("printFactura", (data) => {
 
 socket.on("printRecibo", (data) => {
   let { datosImprimir } = data;
-  if (datosImprimir.sucursales !== "66f4a12d40a1f9b0b8600d4c"){
+  if (datosImprimir.sucursales !== "Optica Cristiana Echeverria"){
     console.log("No pertenece a esta sucursal");
     return; 
   }
