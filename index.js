@@ -8,8 +8,14 @@ const path = require("path");
 const dayjs = require("dayjs");
 const { formatearNumero } = require("./helpers/formato");
 // Conectar al servidor en la nube
+<<<<<<< Updated upstream
 const socket = io("http://localhost:3005"); // Cambia por la dirección IP de tu servidor
 // const socket = io("https://api-appointsmentscontrol.onrender.com"); // Cambia por la dirección IP de tu servidor
+=======
+// const socket = io("http://localhost:3005"); // Cambia por la dirección IP de tu servidor
+// const socket = io("https://api-appointsmentscontrol.onrender.com"); // Cambia por la dirección IP de tu servidor
+const socket = io("https://backendopticaecheverria-production-eeb4.up.railway.app"); // Cambia por la dirección IP de tu servidor
+>>>>>>> Stashed changes
 
 //////// Sucursal Optica Cristiana Echeverria //////////////
 
