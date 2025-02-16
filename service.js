@@ -4,8 +4,8 @@ const Service = require('node-windows').Service;
 const svc = new Service({
   name: '3nStar', // Nombre del servicio
   description: 'Servicio para ejecutar mi API de Node.js para impresora 3nStar', // Descripción del servicio
-  script: 'C:\\Users\\bmeji\\OneDrive\\Documents\\3nStarPrinter\\index.js', // Ruta completa al archivo principal de tu API
-  nodeOptions: [
+  script: 'C:\\ServicioImpresora\\index.js', // Ruta completa al archivo principal de tu API
+  nodeOptions: [ 
     '--harmony', // Opciones adicionales para Node.js
     '--max_old_space_size=4096' // Aumentar límite de memoria si es necesario
   ]
@@ -18,4 +18,4 @@ svc.on('install', () => {
 });
 
 // Instalar el servicio
-svc.install();
+svc.uninstall();

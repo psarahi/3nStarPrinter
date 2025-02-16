@@ -9,12 +9,11 @@ const dayjs = require("dayjs");
 const { formatearNumero } = require("./helpers/formato");
 // Conectar al servidor en la nube
 // const socket = io("http://localhost:3005"); // Cambia por la dirección IP de tu servidor
-// const socket = io("https://api-appointsmentscontrol.onrender.com"); // Cambia por la dirección IP de tu servidor
-// const socket = io("http://localhost:3005"); // Cambia por la dirección IP de tu servidor
-// const socket = io("https://api-appointsmentscontrol.onrender.com"); // Cambia por la dirección IP de tu servidor
-const socket = io("https://backendopticaecheverria-production-eeb4.up.railway.app"); // Cambia por la dirección IP de tu servidor
+// const socket = io("https://backendopticaecheverria-production-eeb4.up.railway.app"); // Echeverria Cambia por la dirección IP de tu servidor
+const socket = io("https://centrovisualpsicocristiano-production.up.railway.app"); // Centro visual cristiano
+// const socket = io("https://opticavisualhn-production.up.railway.app/"); // Optica visual HN Progreso
+// const socket = io("https://backendcentrooptico-production.up.railway.app/"); // Centro Optico cristiano
 
-//////// Sucursal Optica Cristiana Echeverria //////////////
 
 socket.on("connect", () => {
   console.log("Conectado al servidor en la nube");
@@ -25,8 +24,7 @@ socket.on("printFactura", (data) => {
   let { datosImprimir } = data;
   // console.log(datosImprimir);
 
-  if (datosImprimir.nombreSucursal !== "Optica Cristiana Echeverria") {
-    console.log("No pertenece a esta sucursal");
+  if (datosImprimir.sucursales !== "679bc095b62802c2d30aeb33") {
     return;
   }
   try {
@@ -50,15 +48,15 @@ socket.on("printFactura", (data) => {
         </thead>
           <tbody>
             ${datosImprimir.articulos.map(
-              (item) =>
-                `
+      (item) =>
+        `
                   <tr>
                     <td>${item.cantidad}</td>
                     <td>${item.descripcion.toLocaleUpperCase()}</td>
                     <td>${formatearNumero(item.precioVenta)}</td>
                    </tr>
                   `
-            )}
+    )}
           </tbody>
       </table>
     `;
@@ -76,66 +74,68 @@ socket.on("printFactura", (data) => {
 
       // resizeImage("logoOptica.png", "output.png").then(() => {
       // escpos.Image.load(path.resolve("output.png"), (image) => {
-      printer
-        .align("ct")
-        // .raster(imakge)
-        .text(datosImprimir.nombreSucursal.toLocaleUpperCase())
-        .font("a")
-        .align("ct")
-        .encode("utf8")
-        .size(0, 0)
-        .text("CON VISION DE SERVICIO")
-        .text(`RTN ${datosImprimir.rtnSucursal}`)
-        .text(`TEL: ${datosImprimir.tel} / CEL: ${datosImprimir.cel}`)
-        .text(`DIRECCION ${datosImprimir.direccion}`)
-        .text(`EMAIL ${datosImprimir.email}`)
-        .text("")
-        .align("LT")
-        .text(`#FACTURA: ${datosImprimir.numFacRec}`)
-        .text(`FECHA: ${dayjs().format("YYYY-MM-DD hh:mm a")}`)
-        .text(`CLIENTE: ${datosImprimir.cliente}`)
-        .text(`RTN: ${datosImprimir.rtnCliente}`)
-        .text(`VENDEDOR: ${datosImprimir.vendedor}`)
-        .text("")
-        .align("RT")
-        .drawLine()
-        .text(textHtml)
-        .drawLine()
-        .text(datosImprimir.labelsTotales[0])
-        .text(datosImprimir.labelsTotales[1])
-        .text(datosImprimir.labelsTotales[2])
-        .text(datosImprimir.labelsTotales[3])
-        .text(datosImprimir.labelsTotales[4])
-        .text(datosImprimir.labelsTotales[5])
-        .text(datosImprimir.labelsTotales[6])
-        .text(datosImprimir.labelsTotales[7])
-        .text(datosImprimir.labelsTotales[8])
-        .text("")
-        .text(
-          `${datosImprimir.formaPago} L ${formatearNumero(datosImprimir.total)}`
-        )
-        .text("")
-        .align("ct")
-        .text(datosImprimir.totalLetras)
-        .text("No ORDEN DE COMPRA EXENTA:")
-        .text("No CONST. REGISTRO EXONERADO:")
-        .text("No REGISTRO SAG:")
-        .align("lt")
-        .text(`CAI: ${datosImprimir.cai}`)
-        .text(`RANGO AUTORIZADO: ${datosImprimir.rango}`)
-        .text(
-          `FECHA LIMITE DE EMISION : ${dayjs(datosImprimir.fechaEmision)
-            .add(6, "hour")
-            .format("YYYY-MM-DD")}`
-        )
-        .text("")
-        .align("ct")
-        .text("LA FACTURA ES BENEFICIO DE TODOS, EXIJALA")
-        .text(datosImprimir.mensajeFactura.toLocaleUpperCase())
-        .feed(3)
-        .beep(1, 100)
-        .cut()
-        .close();
+     // for (let index = 0; index < 2; index++) {
+        printer
+          .align("CT")
+          // .raster(imakge)
+          .text(datosImprimir.nombreSucursal.toLocaleUpperCase())
+          .font("a")
+          .align("CT")
+          .encode("utf8")
+          .size(0, 0)
+          .text("VISION Y VIDA A SU ALCANCE")
+          .text(`RTN ${datosImprimir.rtnSucursal}`)
+          .text(`TEL: ${datosImprimir.tel} / CEL: ${datosImprimir.cel}`)
+          .text(`DIRECCION ${datosImprimir.direccion}`)
+          .text(`EMAIL ${datosImprimir.email}`)
+          .text("")
+          .align("LT")
+          .text(`#FACTURA: ${datosImprimir.numFacRec}`)
+          .text(`FECHA: ${dayjs().format("YYYY-MM-DD hh:mm a")}`)
+          .text(`CLIENTE: ${datosImprimir.cliente}`)
+          .text(`RTN: ${datosImprimir.rtnCliente}`)
+          .text(`VENDEDOR: ${datosImprimir.vendedor}`)
+          .text("")
+          .align("RT")
+          .drawLine()
+          .text(textHtml)
+          .drawLine()
+          .text(datosImprimir.labelsTotales[0])
+          .text(datosImprimir.labelsTotales[1])
+          .text(datosImprimir.labelsTotales[2])
+          .text(datosImprimir.labelsTotales[3])
+          .text(datosImprimir.labelsTotales[4])
+          .text(datosImprimir.labelsTotales[5])
+          .text(datosImprimir.labelsTotales[6])
+          .text(datosImprimir.labelsTotales[7])
+          .text(datosImprimir.labelsTotales[8])
+          .text("")
+          .text(
+            `${datosImprimir.formaPago} L ${formatearNumero(datosImprimir.total)}`
+          )
+          .text("")
+          .align("ct")
+          .text(datosImprimir.totalLetras)
+          .text("No ORDEN DE COMPRA EXENTA:")
+          .text("No CONST. REGISTRO EXONERADO:")
+          .text("No REGISTRO SAG:")
+          .align("lt")
+          .text(`CAI: ${datosImprimir.cai}`)
+          .text(`RANGO AUTORIZADO: ${datosImprimir.rango}`)
+          .text(
+            `FECHA LIMITE DE EMISION : ${dayjs(datosImprimir.fechaEmision)
+              .add(6, "hour")
+              .format("YYYY-MM-DD")}`
+          )
+          .text("")
+          .align("ct")
+          .text("LA FACTURA ES BENEFICIO DE TODOS, EXIJALA")
+          .text(datosImprimir.mensajeFactura.toLocaleUpperCase())
+          .feed(3)
+          // .beep(1, 100)
+          .cut()
+          .close();
+      //}
     });
     //     });
     //   });
@@ -147,8 +147,7 @@ socket.on("printFactura", (data) => {
 
 socket.on("printRecibo", (data) => {
   let { datosImprimir } = data;
-  if (datosImprimir.nombreSucursal !== "Optica Cristiana Echeverria") {
-    console.log("No pertenece a esta sucursal");
+  if (datosImprimir.sucursales !== "679bc095b62802c2d30aeb33") {
     return;
   }
   try {
@@ -164,13 +163,13 @@ socket.on("printRecibo", (data) => {
       </thead>
         <tbody>
           ${datosImprimir.articulos.map(
-            (item) =>
-              `
+      (item) =>
+        `
                 <tr>
                   <td>${item.descripcion.toLocaleUpperCase()}</td>
                  </tr>
                 `
-          )}
+    )}
         </tbody>
     </table>
   `;
@@ -185,48 +184,51 @@ socket.on("printRecibo", (data) => {
         console.error("Error al abrir el dispositivo:", error);
         return;
       }
-      printer
-        .font("a")
-        .align("LT")
-        .encode("utf8")
-        .size(0.5, 0.5)
-        .text(datosImprimir.nombreSucursal)
-        .size(0, 0)
-        .text("Comprobante")
-        .text(`Ticket # ${datosImprimir.numFacRec}`)
-        .text(`FECHA: ${dayjs().format("YYYY-MM-DD hh:mm a")}`)
-        .text(`Vendedor: ${datosImprimir.vendedor}`)
-        .text("")
-        .text(`Cliente: ${datosImprimir.cliente}`)
-        .text(textHtml)
-        .text("")
-        .text(`Total: ${formatearNumero(datosImprimir.total)}`)
-        .text(`Acuenta: ${formatearNumero(datosImprimir.acuenta)}`)
-        .text(
-          `Resta : ${formatearNumero(
-            datosImprimir.total - datosImprimir.acuenta
-          )}`
-        )
-        .text("")
-        .text("Pago agregado")
-        .text(`Cantidad L ${formatearNumero(datosImprimir.monto)}`)
-        .text(`Fecha ${datosImprimir.fecha}`)
-        .text(`Forma de pago ${datosImprimir.formaPago}`)
-        .feed(3)
-        .drawLine()
-        .text(datosImprimir.cliente.toLocaleUpperCase())
-        .text("Firma de autorizacion")
-        .text("")
-        .text("Recuerda que tu ticket es tu GARANTIA, consevalo")
-        .text("Nuestros datos de contacto:")
-        .text(datosImprimir.direccion)
-        .text(`TEL: ${datosImprimir.tel} / CEL: ${datosImprimir.cel}`)
-        .text(datosImprimir.email)
-        .text(datosImprimir.paginaDigital)
-        .feed(3)
-        .beep(1, 100)
-        .cut()
-        .close();
+     // for (let index = 0; index < 2; index++) {
+        printer
+          .font("a")
+          .align("LT")
+          .encode("utf8")
+          .size(0.5, 0.5)
+          .text(datosImprimir.nombreSucursal)
+          .size(0, 0)
+          .text("Comprobante")
+          .text(`Ticket # ${datosImprimir.numFacRec}`)
+          .text(`FECHA: ${dayjs().format("YYYY-MM-DD hh:mm a")}`)
+          .text(`Vendedor: ${datosImprimir.vendedor}`)
+          .text("")
+          .text(`Cliente: ${datosImprimir.cliente}`)
+          .text(textHtml)
+          .text("")
+          .text(`Total: ${formatearNumero(datosImprimir.total)}`)
+          .text(`Acuenta: ${formatearNumero(datosImprimir.acuenta)}`)
+          .text(
+            `Resta : ${formatearNumero(
+              datosImprimir.total - datosImprimir.acuenta
+            )}`
+          )
+          .text("")
+          .text("Pago agregado")
+          .text(`Cantidad L ${formatearNumero(datosImprimir.monto)}`)
+          .text(`Fecha ${dayjs(datosImprimir.fecha).format("YYYY-MM-DD hh:mm a")}`)
+          .text(`Forma de pago ${datosImprimir.formaPago}`)
+          .feed(3)
+          .drawLine()
+          .text(datosImprimir.cliente.toLocaleUpperCase())
+          .text("Firma de autorizacion")
+          .text("")
+          .text("Recuerda que tu ticket es tu GARANTIA, consevalo")
+          .text(datosImprimir.mensajeFactura.toLocaleUpperCase())
+          .text("Nuestros datos de contacto:")
+          .text(datosImprimir.direccion)
+          .text(`TEL: ${datosImprimir.tel} / CEL: ${datosImprimir.cel}`)
+          .text(datosImprimir.email)
+          .text(datosImprimir.paginaDigital)
+          .feed(3)
+          // .beep(1, 100)
+          .cut()
+          .close();
+      //}
     });
   } catch (error) {
     console.error("Error al imprimir:", error);
