@@ -31,11 +31,11 @@ socket.on("printFactura", (data) => {
     const device = new escpos.USB();
     const printer = new escpos.Printer(device);
 
-    // const resizeImage = async (inputPath, outputPath) => {
-    //   await sharp(inputPath)
-    //     .resize({ width: 400 }) // Match printer width
-    //     .toFile(outputPath);
-    // };
+    const resizeImage = async (inputPath, outputPath) => {
+      await sharp(inputPath)
+        .resize({ width: 400 }) // Match printer width
+        .toFile(outputPath);
+    };
 
     const table = `
       <table style='width:100%' class='receipt-table' border='0'>
@@ -72,12 +72,13 @@ socket.on("printFactura", (data) => {
         return;
       }
 
-      // resizeImage("logoOptica.png", "output.png").then(() => {
-      // escpos.Image.load(path.resolve("output.png"), (image) => {
+      resizeImage("logoOptica.png", "output.png").then(() => {
+      escpos.Image.load(path.resolve("output.png"), (image) => {
      // for (let index = 0; index < 2; index++) {
         printer
           .align("CT")
-          // .raster(imakge)
+          
+           .raster(image)
           .text(datosImprimir.nombreSucursal.toLocaleUpperCase())
           .font("a")
           .align("CT")
@@ -137,9 +138,8 @@ socket.on("printFactura", (data) => {
           .close();
       //}
     });
-    //     });
-    //   });
-    // });
+        });
+      });
   } catch (error) {
     console.error("Error al imprimir:", error);
   }
@@ -210,7 +210,7 @@ socket.on("printRecibo", (data) => {
           .text("")
           .text("Pago agregado")
           .text(`Cantidad L ${formatearNumero(datosImprimir.monto)}`)
-          .text(`Fecha ${dayjs(datosImprimir.fecha).format("YYYY-MM-DD hh:mm a")}`)
+          .text(`Fecha ${dayjs(datosImprimir.fecha).subtract(6,'hour').format("YYYY-MM-DD hh:mm a")}`)
           .text(`Forma de pago ${datosImprimir.formaPago}`)
           .feed(3)
           .drawLine()
