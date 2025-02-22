@@ -6,9 +6,14 @@ const htmlToText = require("html-to-text");
 const sharp = require("sharp");
 const path = require("path");
 const dayjs = require("dayjs");
+const utc = require("dayjs/plugin/utc");
+const timezone = require("dayjs/plugin/timezone");
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+dayjs.tz.setDefault("America/Guatemala");
 const { formatearNumero, textValidator } = require("./helpers/formato");
-// Conectar al servidor en la nube
-// const socket = io("http://localhost:3005"); // Cambia por la dirección IP de tu servidor
+
 const socket = io(
   "https://backendopticaecheverria-production-eeb4.up.railway.app"
 ); // Echeverria Cambia por la dirección IP de tu servidor
@@ -25,7 +30,7 @@ socket.on("printFactura", (data) => {
   let { datosImprimir } = data;
   // console.log(datosImprimir);
 
-  if (datosImprimir.sucursales !== "6783ce51f8cf2be5252615fc") {
+  if (datosImprimir.sucursales !== "6786a32015960a3605c42969") {
     return;
   }
   try {
@@ -92,7 +97,11 @@ socket.on("printFactura", (data) => {
             .text("")
             .align("LT")
             .text(`#FACTURA: ${datosImprimir.numFacRec}`)
-            .text(`FECHA: ${dayjs().format("YYYY-MM-DD hh:mm a")}`)
+            .text(
+              `FECHA: ${dayjs()
+                .tz("America/Guatemala")
+                .format("YYYY-MM-DD hh:mm a")}`
+            )
             .text(`CLIENTE: ${datosImprimir.cliente}`)
             .text(`RTN: ${datosImprimir.rtnCliente}`)
             .text(`VENDEDOR: ${datosImprimir.vendedor}`)
@@ -127,7 +136,7 @@ socket.on("printFactura", (data) => {
             .text(`RANGO AUTORIZADO: ${datosImprimir.rango}`)
             .text(
               `FECHA LIMITE DE EMISION : ${dayjs(datosImprimir.fechaEmision)
-                .add(6, "hour")
+                .tz("America/Guatemala")
                 .format("YYYY-MM-DD")}`
             )
             .text("")
@@ -149,10 +158,12 @@ socket.on("printFactura", (data) => {
 
 socket.on("printRecibo", (data) => {
   let { datosImprimir } = data;
-  if (datosImprimir.sucursales !== "6783ce51f8cf2be5252615fc") {
+  if (datosImprimir.sucursales !== "6786a32015960a3605c42969") {
     return;
   }
   try {
+    console.log("Orden de trabajo");
+
     const device = new escpos.USB();
     const printer = new escpos.Printer(device);
 
@@ -196,7 +207,11 @@ socket.on("printRecibo", (data) => {
         .size(0, 0)
         .text("Comprobante")
         .text(`Ticket # ${datosImprimir.numFacRec}`)
-        .text(`FECHA: ${dayjs().format("YYYY-MM-DD hh:mm a")}`)
+        .text(
+          `FECHA: ${dayjs()
+            .tz("America/Guatemala")
+            .format("YYYY-MM-DD hh:mm a")}`
+        )
         .text(`Vendedor: ${datosImprimir.vendedor}`)
         .text("")
         .text(`Cliente: ${datosImprimir.cliente}`)
@@ -214,7 +229,7 @@ socket.on("printRecibo", (data) => {
         .text(`Cantidad L ${formatearNumero(datosImprimir.monto)}`)
         .text(
           `Fecha ${dayjs(datosImprimir.fecha)
-            .subtract(6, "hour")
+            .tz("America/Guatemala")
             .format("YYYY-MM-DD hh:mm a")}`
         )
         .text(`Forma de pago ${datosImprimir.formaPago}`)
@@ -242,10 +257,12 @@ socket.on("printRecibo", (data) => {
 
 socket.on("printOrdenTrabajo", (data) => {
   let { datosImprimir } = data;
-  if (datosImprimir.sucursalId !== "6783ce51f8cf2be5252615fc") {
+  if (datosImprimir.sucursalId !== "6786a32015960a3605c42969") {
     return;
   }
   try {
+    console.log("Orden de trabajo");
+
     const device = new escpos.USB();
     const printer = new escpos.Printer(device);
 
@@ -261,7 +278,7 @@ socket.on("printOrdenTrabajo", (data) => {
             (item) =>
               `
                 <tr>
-                  <td>${item.descripcion.toLocaleUpperCase()}</td>
+                  <td>${item.inventario.descripcion.toLocaleUpperCase()}</td>
                  </tr>
                 `
           )}
@@ -286,13 +303,13 @@ socket.on("printOrdenTrabajo", (data) => {
         .size(0, 0)
         .text(datosImprimir.tipoVenta)
         .align("LT")
-        .text("Orden de trabajo")
+        // .text("Orden de trabajo")
         .text(datosImprimir.nombreSucursal)
         .text("")
         .text(`${datosImprimir.paciente}`)
-        .text(`Direccion: ${datosImprimir.direccion}`)
+        .text(`${datosImprimir.direccion}`)
         .text(
-          `Telefono: ${datosImprimir.telefono}  Edad: ${datosImprimir.edad}`
+          `Tel: ${datosImprimir.telefono}  Edad: ${datosImprimir.edad}`
         )
         .text("")
         .text(
@@ -362,12 +379,13 @@ socket.on("printOrdenTrabajo", (data) => {
             datosImprimir.total - parseFloat(datosImprimir.acuenta)
           )} Total: ${datosImprimir.total}`
         )
-        .text(` Forma Pago: ${datosImprimir.formaPago}`)
+        .text(`Forma Pago: ${datosImprimir.formaPago}`)
         .text(
-          `Ticket# ${datosImprimir.numFacRec} ${dayjs().format(
-            "YYYY-MM-DD hh:mm a"
-          )}`
+          `Ticket# ${datosImprimir.numFacRec} ${dayjs()
+            .tz("America/Guatemala")
+            .format("YYYY-MM-DD hh:mm a")}`
         )
+        .text(`Generado por: ${datosImprimir.formaPago}`)
         .feed(3)
         .cut()
         .close();
