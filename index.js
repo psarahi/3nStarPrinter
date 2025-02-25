@@ -30,7 +30,7 @@ socket.on("printFactura", (data) => {
   let { datosImprimir } = data;
   // console.log(datosImprimir);
 
-  if (datosImprimir.sucursales !== "6786a32015960a3605c42969") {
+  if (datosImprimir.sucursales !== "6785925e15960a3605c427d0") {
     return;
   }
   try {
@@ -89,7 +89,8 @@ socket.on("printFactura", (data) => {
             .align("CT")
             .encode("utf8")
             .size(0, 0)
-            .text("VISION Y VIDA A SU ALCANCE")
+            // .text("VISION Y VIDA A SU ALCANCE")
+            .text("CON VISION DE SERVICIO")
             .text(`RTN ${datosImprimir.rtnSucursal}`)
             .text(`TEL: ${datosImprimir.tel} / CEL: ${datosImprimir.cel}`)
             .text(`DIRECCION ${datosImprimir.direccion}`)
@@ -158,12 +159,10 @@ socket.on("printFactura", (data) => {
 
 socket.on("printRecibo", (data) => {
   let { datosImprimir } = data;
-  if (datosImprimir.sucursales !== "6786a32015960a3605c42969") {
+  if (datosImprimir.sucursales !== "6785925e15960a3605c427d0") {
     return;
   }
   try {
-    console.log("Orden de trabajo");
-
     const device = new escpos.USB();
     const printer = new escpos.Printer(device);
 
@@ -257,7 +256,7 @@ socket.on("printRecibo", (data) => {
 
 socket.on("printOrdenTrabajo", (data) => {
   let { datosImprimir } = data;
-  if (datosImprimir.sucursalId !== "6786a32015960a3605c42969") {
+  if (datosImprimir.sucursalId !== "6785925e15960a3605c427d0") {
     return;
   }
   try {
@@ -270,6 +269,7 @@ socket.on("printOrdenTrabajo", (data) => {
     <table style='width:100%' class='receipt-table' border='0'>
       <thead>
         <tr class='heading'>
+          <th>Cant</th>
           <th>Descripcion</th>
         </tr>
       </thead>
@@ -278,7 +278,8 @@ socket.on("printOrdenTrabajo", (data) => {
             (item) =>
               `
                 <tr>
-                  <td>${item.inventario.descripcion.toLocaleUpperCase()}</td>
+                  <td>${item.cantidad}</td>
+                  <td>${item.descripcion.toLocaleUpperCase()}</td>
                  </tr>
                 `
           )}
@@ -321,9 +322,9 @@ socket.on("printOrdenTrabajo", (data) => {
             textValidator(datosImprimir.recetaOjoDerecho.cilindro)
               ? datosImprimir.recetaOjoDerecho.cilindro
               : ""
-          } x${
+          } ${
             textValidator(datosImprimir.recetaOjoDerecho.eje)
-              ? datosImprimir.recetaOjoDerecho.eje
+              ? `x${datosImprimir.recetaOjoDerecho.eje}`
               : ""
           }`
         )
@@ -348,9 +349,9 @@ socket.on("printOrdenTrabajo", (data) => {
             textValidator(datosImprimir.recetaOjoIzquierdo.cilindro)
               ? datosImprimir.recetaOjoIzquierdo.cilindro
               : ""
-          } x${
+          } ${
             textValidator(datosImprimir.recetaOjoIzquierdo.eje)
-              ? datosImprimir.recetaOjoIzquierdo.eje
+              ? `x${datosImprimir.recetaOjoIzquierdo.eje}`
               : ""
           }`
         )
@@ -385,7 +386,7 @@ socket.on("printOrdenTrabajo", (data) => {
             .tz("America/Guatemala")
             .format("YYYY-MM-DD hh:mm a")}`
         )
-        .text(`Generado por: ${datosImprimir.formaPago}`)
+        .text(`Generado por: ${datosImprimir.usuario}`)
         .feed(3)
         .cut()
         .close();
