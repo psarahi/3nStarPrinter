@@ -89,7 +89,6 @@ socket.on("printFactura", (data) => {
             .align("CT")
             .encode("utf8")
             .size(0, 0)
-            // .text("VISION Y VIDA A SU ALCANCE")
             .text("CON VISION DE SERVICIO")
             .text(`RTN ${datosImprimir.rtnSucursal}`)
             .text(`TEL: ${datosImprimir.tel} / CEL: ${datosImprimir.cel}`)
@@ -260,8 +259,6 @@ socket.on("printOrdenTrabajo", (data) => {
     return;
   }
   try {
-    console.log("Orden de trabajo");
-
     const device = new escpos.USB();
     const printer = new escpos.Printer(device);
 
@@ -396,6 +393,6 @@ socket.on("printOrdenTrabajo", (data) => {
   }
 });
 
-socket.on("disconnect", () => {
+socket.off("disconnect", () => {
   console.log("Desconectado del servidor en la nube");
 });
