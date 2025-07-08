@@ -18,4 +18,4 @@ svc.on('install', () => {
 });
 
 // Instalar el servicio
-svc.uninstall();
+svc.install();
